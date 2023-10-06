@@ -1,6 +1,0 @@
-<launch>
-
-    <include file="$(find bebop_driver)/launch/bebop_nodelet.launch" />
-    <include file="$(find bebop_vel_ctrl)/launch/bebop_ar_track_vel_controller.launch" />
-
-</launch>
