@@ -13,10 +13,6 @@ class TrajectoryTracking:
         self.v = 0.5
         self.dt = 0.1
 
-        # self.ref_traj = np.load("/home/anish/gym-pybullet-drones/reference_trajectories/ref_circle.npy")
-        # self.ref_traj_x = self.ref_traj[0]
-        # self.ref_traj_y = self.ref_traj[1]
-
         self.ref_traj_x = ref_traj_x
         self.ref_traj_y = ref_traj_y
 
@@ -142,14 +138,6 @@ class TrajectoryTracking:
             self.prev_pose = msg.pose
             self.prev_time = current_time
 
-        
-
-        # if ((x_cur-self.goal_x)**2 + (y_cur - self.goal_y)**2) <= 0.005:
-        #     rospy.loginfo("Trajectory tracking completed")
-        #     rospy.signal_shutdown("Goal Reached!!")
-
-        # self.drone_traj_x.append(x_cur)
-        # self.drone_traj_y.append(y_cur)
 
         actual_traj_x.append(self.x_cur)
         actual_traj_y.append(self.y_cur)
