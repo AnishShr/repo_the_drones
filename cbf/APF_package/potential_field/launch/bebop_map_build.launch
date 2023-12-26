@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+
+<arg name="world" default="/home/anish/drone_lidar_ws/src/APF_package/potential_field/worlds/bebop_custom.world" />
+<include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world)"/>
+</include>
+
+<include file="$(find bebop_gazebo)/launch/spawn_bebop.launch" />
+
+<include file="$(find potential_field)/launch/bebop_upload_description.launch" />
+
+<node type="rviz" name="rviz" pkg="rviz" />
+
+<!-- <node name="map_server" pkg="map_server" type="map_server" output="screen">
+    <param name="frame_id" type="string" value="map" />
+</node> -->
+
+<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 map odom 100" />
+
+</launch>

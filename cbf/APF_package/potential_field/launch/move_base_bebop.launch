@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<launch>
+
+
+  <!-- Launch navigation stack -->
+  <arg name="no_static_map" default="false"/>
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <remap from='odom' to='bebop/odom'/>
+    <rosparam file="$(find potential_field)/config/move_base_params.yaml" command="load"/>
+    <!-- <rosparam file="$(find potential_field)/config/planner_local_params.yaml" command="load" /> -->
+    <!-- <rosparam file="$(find potential_field)/config/planner_global_params.yaml" command="load" /> -->
+    <!-- observation sources located in costmap_common.yaml -->
+    <rosparam file="$(find potential_field)/config/costmap_common.yaml" subst_value="true" command="load" ns="global_costmap" />
+    <rosparam file="$(find potential_field)/config/costmap_common.yaml" subst_value="true" command="load" ns="local_costmap" />
+    <!-- static global costmap, static map provides size -->
+    <rosparam file="$(find potential_field)/config/costmap_global_static.yaml" subst_value="true" command="load" ns="global_costmap" unless="$(arg no_static_map)"/>
+  </node>
+</launch>

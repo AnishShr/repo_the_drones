@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<!-- original : navigation_global/move_base.xml (electric) -->
+<launch>
+  <!-- source pointcloud -->
+  <arg name="cloud_in" default=#TOD0 # name of topic publishing point cloud />
+  <!-- base frame to scan -->  
+  <arg name="scan_frame" default="bebop" />
+  <!-- scan range -->
+  <arg name="max_height" default= #TOD0/> <!-- vertical range of laser scan from scan_frame [m] -->
+  <arg name="min_height" default=#TOD0 />
+  <arg name="angle_max" default=#TOD0 /> <!--  horizontal range of laser scan [rad] -->
+  <arg name="angle_min" default=#TOD0 />
+  <arg name="angle_increment" default ="0.0087"/>
+  <arg name="range_min" default="0.0" />
+  <arg name="range_max" default="50.0" />
+  <arg name="use_inf" default="true" />
+  <arg name="concurrency_level" default="1" />
+  
+  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan_node" output="screen" >
+    <remap from="cloud_in" to="$(arg cloud_in)" />
+    <remap from="scan" to="/pointcloud_scan" />
+    <param name="target_frame" value=#TOD0 />
+    <param name="max_height" value=#TOD0 />
+    <param name="min_height" value=#TOD0 />
+    <param name="angle_max" value=#TOD0 />
+    <param name="angle_min" value=#TOD0 />
+    <param name="range_min" value=#TOD0 />
+    <param name="range_max" value=#TOD0 />
+    <param name="use_inf" value=#TOD0 />
+    <param name="concurrency_level" value="$(arg concurrency_level)" />
+    <param name="angle_increment" value="$(arg angle_increment)" />
+  </node>
+</launch>

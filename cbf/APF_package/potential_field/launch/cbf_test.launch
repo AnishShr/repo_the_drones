@@ -1,0 +1,26 @@
+<launch>
+  <node name="pointcloud_to_laserscan" pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" output="screen">
+    <remap from="cloud_in" to="obs_to_pointcloud" />  
+    <param name="target_frame" value="base_link" />  
+  </node>
+
+  <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
+    <rosparam file="$(find potential_field)/config/costmap2d.yaml" command="load" />
+  </node>
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_global_planner" value="global_planner/GlobalPlanner"/>
+    <rosparam file="$(find potential_field)/config/costmap2d_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find potential_field)/config/costmap2d_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find potential_field)/config/costmap2d_local.yaml" command="load" />
+    <rosparam file="$(find potential_field)/config/costmap2d_global.yaml" command="load" />
+  </node>
+
+  <node pkg="potential_field" type="obstacle_to_pointcloud.py" name="point_cloud_circular" output="screen" />
+
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find potential_field)/pcl_to_costmap.rviz" />
+
+  <node pkg="potential_field" name="potential_field" type="potential_field.py" output="screen"/>
+  <node pkg="potential_field" name="compute_velocity" type="compute_velocity.py" output="screen"/>
+
+</launch>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="world" default="$(find potential_field)/worlds/cbf_example_3.world" />
+  <!-- <arg name="world" default="$(find potential_field)/worlds/test.world" /> -->
+  <!-- <arg name="use_sim_time" default="False" /> -->
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world)"/>
+    <!-- <arg name="use_sim_time" value="$(arg use_sim_time)" /> -->
+  </include>
+
+  <include file="$(find bebop_gazebo)/launch/spawn_bebop.launch" />
+
+  <node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 world odom 100" />
+
+</launch>

@@ -1,0 +1,43 @@
+<launch>
+  <!-- Launch Gazebo with your world file -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="world" default="/home/anish/drone_lidar_ws/src/APF_package/potential_field/worlds/robotont_custom.world" />
+
+  
+  <remap from="scan" to="bebop/laser_scan"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <!-- <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="debug" value="$(arg debug)"/> -->
+    <arg name="world_name" value="$(arg world)"/>
+  </include>
+
+  <!-- <node pkg="tf" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 -0.0015 0.9999 map odom 50"/> -->
+
+  <include file="$(find bebop_gazebo)/launch/spawn_bebop.launch" />
+    
+
+  <!-- <include file="$(find bebop_gazebo)/launch/bebop_empty_world.launch">
+    <arg name="world_name" value="$(arg world)"/>
+  </include> -->
+  
+  <!-- <include file="$(find potential_field)/launch/map.launch"/> -->
+  <include file="$(find robotont_navigation)/launch/move_base.launch"/>
+  <remap from="cmd_vel" to="cmd_vel_bebop"/>
+  <!-- <remap from="scan" to="bebop/laser_scan"/> -->
+  <!-- <remap from="bebop/laser_scan" to="scan"/> -->
+  <remap from="cmd_vel_bebop" to="bebop/cmd_vel"/>
+  <!-- <node type="rviz" name="rviz" pkg="rviz" args="-d $(find potential_field)/potential_field.rviz" /> -->
+
+
+
+  <node pkg="potential_field" name="potential_field" type="potential_field.py" output="screen"/>
+  <node pkg="potential_field" name="compute_velocity" type="compute_velocity.py" output="screen"/>
+
+</launch>

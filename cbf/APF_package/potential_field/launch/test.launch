@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<launch>
+
+<arg name="no_static_map" default="false"/>
+<arg name="world" default="/home/anish/drone_lidar_ws/src/APF_package/potential_field/worlds/bebop_custom.world" />
+
+<include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world)"/>
+</include>
+
+<include file="$(find bebop_gazebo)/launch/spawn_bebop.launch" />
+
+<node name="map_server" pkg="map_server" type="map_server" args="$(find potential_field)/bebop_custom.yaml" output="screen">
+    <param name="frame_id" type="string" value="map" />
+</node>
+
+<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <remap from='odom' to='bebop/odom'/>
+    <remap from='cmd_vel' to='bebop/cmd_vel'/>
+    <rosparam file="$(find potential_field)/config/move_base_params.yaml" command="load"/>
+    <!-- <rosparam file="$(find potential_field)/config/planner_local_params.yaml" command="load" /> -->
+    <!-- <rosparam file="$(find potential_field)/config/planner_global_params.yaml" command="load" /> -->
+    <!-- observation sources located in costmap_common.yaml -->
+    <rosparam file="$(find potential_field)/config/costmap_common.yaml" subst_value="true" command="load" ns="global_costmap" />
+    <rosparam file="$(find potential_field)/config/costmap_common.yaml" subst_value="true" command="load" ns="local_costmap" />
+    <!-- static global costmap, static map provides size -->
+    <rosparam file="$(find potential_field)/config/costmap_global_static.yaml" subst_value="true" command="load" ns="global_costmap" unless="$(arg no_static_map)"/>
+</node>
+
+
+<node pkg="potential_field" name="potential_field" type="potential_field.py" output="screen"/>
+<node pkg="potential_field" name="compute_velocity" type="compute_velocity.py" output="screen"/>
+
+<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 1 map odom 100" />
+
+<node type="rviz" name="rviz" pkg="rviz" args="-d $(find potential_field)/bebop_test.rviz" />
+
+</launch>
