@@ -21,19 +21,23 @@ class potential_field:
 
         # Subscribe to the global planner using the move base package. The global plan is the path that the robot would ideally follow if 
         # there are no unknown/dynamic obstacles. In the videos this is highlighted by green color.
-        # self.global_path_sub = rospy.Subscriber("/move_base/NavfnROS/plan", Path, self.handle_global_path)
-        self.global_path_sub = rospy.Subscriber("/move_base/GlobalPlanner/plan", Path, self.handle_global_path)
+        self.global_path_sub = rospy.Subscriber("/move_base/NavfnROS/plan", Path, self.handle_global_path)
+        # self.global_path_sub = rospy.Subscriber("/move_base/GlobalPlanner/plan", Path, self.handle_global_path)
 
-        if self.mode == "simulation":
-            self.laser_sub = rospy.Subscriber("/bebop/laser_scan", LaserScan, self.handle_laser)
-            self.odom_sub = rospy.Subscriber("/bebop/odom", Odometry, self.handle_odom)
-            # Subscribe to the goal topic to get the goal position given using rviz's 2D Navigation Goal option.
-            self.goal_sub = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.handle_goal)
-        else:
-            self.laser_sub = rospy.Subscriber("/scan", LaserScan, self.handle_laser)
-            self.odom_sub = rospy.Subscriber("/vrpn_client_node/bebop/pose", PoseStamped, self.handle_odom)
-            # Subscribe to the goal topic to get the goal position given using rviz's 2D Navigation Goal option.
-            self.goal_sub = rospy.Subscriber("/move_base/GlobalPlanner/plan", PoseStamped, self.handle_goal)
+        self.odom_sub = rospy.Subscriber("/odom", Odometry, self.handle_odom)
+        self.goal_sub = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.handle_goal)
+        self.laser_sub = rospy.Subscriber("/scan", LaserScan, self.handle_laser)
+
+        # if self.mode == "simulation":
+        #     self.laser_sub = rospy.Subscriber("/bebop/laser_scan", LaserScan, self.handle_laser)
+        #     self.odom_sub = rospy.Subscriber("/bebop/odom", Odometry, self.handle_odom)
+        #     # Subscribe to the goal topic to get the goal position given using rviz's 2D Navigation Goal option.
+        #     self.goal_sub = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.handle_goal)
+        # else:
+        #     self.laser_sub = rospy.Subscriber("/scan", LaserScan, self.handle_laser)
+        #     self.odom_sub = rospy.Subscriber("/vrpn_client_node/bebop/pose", PoseStamped, self.handle_odom)
+        #     # Subscribe to the goal topic to get the goal position given using rviz's 2D Navigation Goal option.
+        #     self.goal_sub = rospy.Subscriber("/move_base/GlobalPlanner/plan", PoseStamped, self.handle_goal)
         
 
         # Publish the potential field vector topic which will be subscribed by the command_velocity node in order to
@@ -100,8 +104,8 @@ class potential_field:
                 self.path_robot.header.frame_id = 'map'
             pose = PoseStamped()
             pose.header = odom_data.header
-            # pose.pose = odom_data.pose.pose
-            pose.pose = odom_data.pose
+            pose.pose = odom_data.pose.pose
+            # pose.pose = odom_data.pose
             self.path_robot.poses.append(pose)
             self.robot_path_pub.publish(self.path_robot)
 
@@ -153,10 +157,10 @@ class potential_field:
             return (0,0)
 
         odom_data = self.odom
-        # pos_x = odom_data.pose.pose.position.x
-        # pos_y = odom_data.pose.pose.position.y
-        pos_x = odom_data.pose.position.x
-        pos_y = odom_data.pose.position.y
+        pos_x = odom_data.pose.pose.position.x
+        pos_y = odom_data.pose.pose.position.y
+        # pos_x = odom_data.pose.position.x
+        # pos_y = odom_data.pose.position.y
         pos = []
         pos.append(pos_x)
         pos.append(pos_y)
