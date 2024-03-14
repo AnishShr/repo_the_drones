@@ -16,15 +16,18 @@ class safe_teleop:
         rospy.init_node("command_velocity")
         self.mode = "hardware" # simulation
 
+        self.cmd_pub = rospy.Publisher("cmd_vel_robotont", Twist,queue_size=10)
+
         rospy.Subscriber("potential_field_vector", Point, self.handle_potential_field)
-        # self.cmd_pub = rospy.Publisher("cmd_vel_robotont", Twist,queue_size=10)
-        self.cmd_pub = None
-        if self.mode == "simulation":
-            self.cmd_pub = rospy.Publisher("bebop/cmd_vel", Twist,queue_size=10)
+        rospy.Subscriber("odom", Odometry, self.odom_callback)
+
+        # self.cmd_pub = None
+        # if self.mode == "simulation":
+        #     self.cmd_pub = rospy.Publisher("bebop/cmd_vel", Twist,queue_size=10)
             
-        else:
-            self.cmd_pub = rospy.Publisher("bebop/velocity", Twist,queue_size=10)
-            self.pose_sub = rospy.Subscriber("vrpn_client_node/bebop/pose", PoseStamped, self.pose_callback, queue_size=1)
+        # else:
+        #     self.cmd_pub = rospy.Publisher("bebop/velocity", Twist,queue_size=10)
+        #     self.pose_sub = rospy.Subscriber("vrpn_client_node/bebop/pose", PoseStamped, self.pose_callback, queue_size=1)
 
         self.yaw = None
         self.odom = None
@@ -47,8 +50,10 @@ class safe_teleop:
 
 #---------------------------------------------------
     
-    def pose_callback(self, pose_msg):
-        orientation = pose_msg.pose.orientation
+    # def pose_callback(self, pose_msg):
+    def odom_callback(self, odom_msg):
+        # orientation = pose_msg.pose.orientation
+        orientation = odom_msg.pose.pose.orientation
         quaternion = [orientation.x, orientation.y, orientation.z, orientation.w] 
         roll, pitch, yaw = transformations.euler_from_quaternion(quaternion)
 
@@ -58,6 +63,10 @@ class safe_teleop:
 #-------------------------------------------------
 
     def compute_motion_cmd(self):
+
+        # print(f"obstacle vector: \n{self.obstacle_vector}")
+        # print(f"yaw: {self.yaw}")
+
         if (self.obstacle_vector is None):
             cmd = None
         else:
