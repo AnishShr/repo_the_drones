@@ -6,7 +6,8 @@
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <arg name="use_map_topic" default="true"/>
-  <arg name="scan_topic" default="bebop/laser_scan" />
+  <!-- <arg name="scan_topic" default="bebop/laser_scan" /> -->
+  <arg name="scan_topic" default="scan" />
   <arg name="x_pos" default="0"/>
   <arg name="y_pos" default="0"/>
   <arg name="z_pos" default="0.000925"/>
